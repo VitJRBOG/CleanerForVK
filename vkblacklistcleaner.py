@@ -116,18 +116,45 @@ def unban_users(sender, vk_session, group_id):
             exception_handler(sender, var_except)
             return get_user_name(sender, vk_session, item)
 
+    def get_group_name(sender, vk_session, item):
+        sender += " -> Get user's name"
+
+        try:
+
+            author_values = {
+                "group_ids": item["group"]["id"]
+            }
+
+            response = vk_session.method("groups.getById", author_values)
+
+            group_name = response[0]["name"]
+
+            return group_name
+
+        except Exception as var_except:
+            exception_handler(sender, var_except)
+            return get_group_name(sender, vk_session, item)
+
     def run_unban(sender, vk_session, group_id, item):
         sender += " -> Run unban"
 
         try:
-            values = {
-                "group_id": group_id,
-                "user_id": item["profile"]["id"]
-            }
+            if item["type"] == "profile":
+                values = {
+                    "group_id": group_id,
+                    "owner_id": item["profile"]["id"]
+                }
+            else:
+                values = {
+                    "group_id": group_id,
+                    "owner_id": "-" + str(item["group"]["id"])
+                }
 
-            vk_session.method("groups.unbanUser", values)
+            vk_session.method("groups.unban", values)
 
         except Exception as var_except:
+            if str(var_except).lower().find("user not blacklisted") != -1:
+                return
             exception_handler(sender, var_except)
             return run_unban(sender, vk_session, group_id, item)
 
@@ -143,7 +170,7 @@ def unban_users(sender, vk_session, group_id):
             offset += 200
 
         print("COMPUTER [" + sender + "]: Black list contained " +
-              str(len(banned_list)) + " users.")
+              str(len(banned_list)) + " subjects.")
 
         i = len(banned_list) - 1
 
@@ -160,6 +187,16 @@ def unban_users(sender, vk_session, group_id):
                     run_unban(sender, vk_session, group_id, item)
 
                     print(str(i + 1) + ". " + user_name +
+                        " has been removed from black list.")
+
+                    removed += 1
+            if "group" in item:
+                if "id" in item["group"]:
+
+                    group_name = get_group_name(sender, vk_session, item)
+                    run_unban(sender, vk_session, group_id, item)
+
+                    print(str(i + 1) + ". " + group_name +
                         " has been removed from black list.")
 
                     removed += 1
