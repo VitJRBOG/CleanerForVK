@@ -6,7 +6,7 @@ func MakeUI() {
 	var ui UI
 	ui.showMainMenu()
 	for {
-		ui.getUserSelection()
+		ui.setUserSelection()
 		success := ui.showSelected()
 		if success {
 			break
@@ -28,7 +28,7 @@ func (ui *UI) showMainMenu() {
 		"> ")
 }
 
-func (ui *UI) getUserSelection() {
+func (ui *UI) setUserSelection() {
 	_, err := fmt.Scan(&ui.UserSelection)
 	if err != nil {
 		panic(err.Error())
