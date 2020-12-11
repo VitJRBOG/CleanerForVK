@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func MakeUI() {
 	var ui UI
@@ -57,9 +60,76 @@ func (ui *UI) showMessageOfWrongInput() {
 func (ui *UI) showMessageOfExit() {
 	fmt.Print("Exit...\n")
 }
+
+type CleanWallPostsUI struct {
+	AccessToken string
+	OwnerID     int
+	AuthorID    int
+	msgChannel  chan string
+}
+
+func (c *CleanWallPostsUI) init() {
+	c.msgChannel = make(chan string)
+}
+
+func (c *CleanWallPostsUI) setAccessToken() {
+	fmt.Print("--- Enter your access token and press «Enter» ---\n" +
+		"> ")
+	var accessToken string
+	_, err := fmt.Scan(&accessToken)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.AccessToken = accessToken
+}
+
+func (c *CleanWallPostsUI) setOwnerID() {
+	fmt.Print("--- Now enter ID of owner of wall posts and press «Enter» ---\n" +
+		"> ")
+	var ownerID string
+	_, err := fmt.Scan(&ownerID)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.OwnerID, err = strconv.Atoi(ownerID)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func (c *CleanWallPostsUI) setAuthorID() {
+	fmt.Print("--- And enter ID of author of wall posts and press «Enter» ---\n" +
+		"> ")
+	var authorID string
+	_, err := fmt.Scan(&authorID)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.AuthorID, err = strconv.Atoi(authorID)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func (c *CleanWallPostsUI) outputtingMessages() {
+	for {
+		msg := <-c.msgChannel
+		fmt.Printf("%v\n", msg)
+		if msg == "Done!" || msg == "No wall posts from this author..." {
+			break
+		}
+	}
+}
+
 func showCleanWallPostsUI() {
-	fmt.Println("[Cleaning of wallposts]\n" +
-		"Here is empty yet....")
+	var cwpUI CleanWallPostsUI
+	cwpUI.init()
+	fmt.Print("[Cleaning of wallposts]\n")
+	cwpUI.setAccessToken()
+	cwpUI.setOwnerID()
+	cwpUI.setAuthorID()
+	go RunWallPostsCleaning(cwpUI.AccessToken, cwpUI.OwnerID, cwpUI.AuthorID, cwpUI.msgChannel)
+	cwpUI.outputtingMessages()
 }
 
 func showCleanWallPostsCommentsUI() {
