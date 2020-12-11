@@ -14,6 +14,7 @@ func MakeUI() {
 			ui.showMessageOfWrongInput()
 		}
 	}
+	ui.showMessageOfExit()
 }
 
 type UI struct {
@@ -53,6 +54,9 @@ func (ui *UI) showMessageOfWrongInput() {
 		"> ")
 }
 
+func (ui *UI) showMessageOfExit() {
+	fmt.Print("Exit...\n")
+}
 func showCleanWallPostsUI() {
 	fmt.Println("[Cleaning of wallposts]\n" +
 		"Here is empty yet....")
