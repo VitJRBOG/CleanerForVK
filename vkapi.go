@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-func SendRequestVKAPI(accessToken, methodName string, paramsMap map[string]string) ([]byte, error) {
+func SendRequestVkApi(accessToken, methodName string, paramsMap map[string]string) ([]byte, error) {
 	var qh VkApiQueryHandler
 	qh.makeURL(accessToken, methodName, paramsMap)
 	qh.sendQuery()
