@@ -16,9 +16,9 @@ func SendRequestVKAPI(accessToken, methodName string, paramsMap map[string]strin
 
 	if qh.Error != nil {
 		return nil, qh.Error
-	} else {
-		return qh.Response, nil
 	}
+
+	return qh.Response, nil
 }
 
 type VkApiQueryHandler struct {
