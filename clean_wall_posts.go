@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+
+	govkapi "github.com/VitJRBOG/GoVkApi"
 )
 
 func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel chan string) {
@@ -56,7 +58,7 @@ func (w *WallPostCleaner) requestWallPosts() {
 		"v":        "5.126",
 	}
 	time.Sleep(335 * time.Millisecond)
-	response, err := SendRequestVkApi(w.AccessToken, "wall.get", paramsMap)
+	response, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.get", paramsMap)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -118,7 +120,7 @@ func (w *WallPostCleaner) deleteAuthorsPublications() {
 				"v":        "5.126",
 			}
 			time.Sleep(335 * time.Millisecond)
-			_, err := SendRequestVkApi(w.AccessToken, "wall.delete", paramsMap)
+			_, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.delete", paramsMap)
 			if err != nil {
 				panic(err.Error())
 			} else {
