@@ -197,24 +197,26 @@ func (w *WallPostCommentsCleaner) deleteAuthorsWallPostComments() {
 			if err != nil {
 				panic(err.Error())
 			} else {
-				msg := fmt.Sprintf("Comment https://vk.com/wall%d_%d?reply=%d has been successfully deleted.",
-					w.AuthorsWallPostComments[i].OwnerID, w.AuthorsWallPostComments[i].WallPostID, w.AuthorsWallPostComments[i].ID)
+				msg := fmt.Sprintf("Comment https://vk.com/wall%d_%d?reply=%d"+
+					" has been successfully deleted.",
+					w.AuthorsWallPostComments[i].OwnerID, w.AuthorsWallPostComments[i].WallPostID,
+					w.AuthorsWallPostComments[i].ID)
 				w.MsgChannel <- msg
 			}
 		}
 		w.MsgChannel <- "Done!"
 	} else {
-		w.MsgChannel <- "No wall post comments from this author..."
+		w.MsgChannel <- "No comments of wallpost from this author..."
 	}
 }
 
 func (w *WallPostCommentsCleaner) showProgress() {
 	if len(w.WallPosts) > 0 {
 		if w.WallPostsOffset == 0 {
-			w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
+			w.MsgChannel <- fmt.Sprintf("Progress: %d wallposts has been viewed...",
 				len(w.WallPosts)+w.WallPostsOffset)
 		} else {
-			w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
+			w.MsgChannel <- fmt.Sprintf("Progress: %d wallposts has been viewed...",
 				len(w.WallPosts)+w.WallPostsOffset-1)
 		}
 	}

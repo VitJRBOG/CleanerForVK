@@ -26,8 +26,8 @@ type UI struct {
 
 func (ui *UI) showMainMenu() {
 	fmt.Print("\n[Main menu]\n" +
-		"1. Cleaning of wallposts;\n" +
-		"2. Cleaning comments under wallposts.\n" +
+		"1. Deleting wallposts;\n" +
+		"2. Deleting comments of wallposts.\n" +
 		"--- Enter number of menu item and press «Enter» ---\n" +
 		"> ")
 }
@@ -84,7 +84,7 @@ func (c *CleanWallPostsUI) setAccessToken() {
 }
 
 func (c *CleanWallPostsUI) setOwnerID() {
-	fmt.Print("--- Now enter ID of owner of wall posts and press «Enter» ---\n" +
+	fmt.Print("--- Now enter ID of owner of wallposts and press «Enter» ---\n" +
 		"> ")
 	var ownerID string
 	_, err := fmt.Scan(&ownerID)
@@ -98,7 +98,7 @@ func (c *CleanWallPostsUI) setOwnerID() {
 }
 
 func (c *CleanWallPostsUI) setAuthorID() {
-	fmt.Print("--- And enter ID of author of wall posts and press «Enter» ---\n" +
+	fmt.Print("--- And enter ID of author of wallposts comments and press «Enter» ---\n" +
 		"> ")
 	var authorID string
 	_, err := fmt.Scan(&authorID)
@@ -115,7 +115,7 @@ func (c *CleanWallPostsUI) outputtingMessages() {
 	for {
 		msg := <-c.msgChannel
 		fmt.Printf("%v\n", msg)
-		if msg == "Done!" || msg == "No wall posts from this author..." {
+		if msg == "Done!" || msg == "No wallposts from this author..." {
 			break
 		}
 	}
@@ -124,7 +124,7 @@ func (c *CleanWallPostsUI) outputtingMessages() {
 func showCleanWallPostsUI() {
 	var cwpUI CleanWallPostsUI
 	cwpUI.init()
-	fmt.Print("[Cleaning of wallposts]\n")
+	fmt.Print("[Deleting wallposts]\n")
 	cwpUI.setAccessToken()
 	cwpUI.setOwnerID()
 	cwpUI.setAuthorID()
@@ -155,7 +155,7 @@ func (c *CleanWallPostCommentsUI) setAccessToken() {
 }
 
 func (c *CleanWallPostCommentsUI) setOwnerID() {
-	fmt.Print("--- Now enter ID of owner of wall post comments and press «Enter» ---\n" +
+	fmt.Print("--- Now enter ID of owner of comments and press «Enter» ---\n" +
 		"> ")
 	var ownerID string
 	_, err := fmt.Scan(&ownerID)
@@ -169,7 +169,7 @@ func (c *CleanWallPostCommentsUI) setOwnerID() {
 }
 
 func (c *CleanWallPostCommentsUI) setAuthorID() {
-	fmt.Print("--- And enter ID of author of wall post comments and press «Enter» ---\n" +
+	fmt.Print("--- And enter ID of author of comments and press «Enter» ---\n" +
 		"> ")
 	var authorID string
 	_, err := fmt.Scan(&authorID)
@@ -186,7 +186,7 @@ func (c *CleanWallPostCommentsUI) outputtingMessages() {
 	for {
 		msg := <-c.msgChannel
 		fmt.Printf("%v\n", msg)
-		if msg == "Done!" || msg == "No wall post comments from this author..." {
+		if msg == "Done!" || msg == "No comments of wallpost from this author..." {
 			break
 		}
 	}
@@ -195,7 +195,7 @@ func (c *CleanWallPostCommentsUI) outputtingMessages() {
 func showCleanWallPostsCommentsUI() {
 	var cwpcUI CleanWallPostCommentsUI
 	cwpcUI.init()
-	fmt.Print("[Cleaning of comments under wallposts]\n")
+	fmt.Print("[Deleting comments of wallposts]\n")
 	cwpcUI.setAccessToken()
 	cwpcUI.setOwnerID()
 	cwpcUI.setAuthorID()

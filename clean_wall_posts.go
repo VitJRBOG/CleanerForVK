@@ -124,24 +124,25 @@ func (w *WallPostsCleaner) deleteAuthorsWallPosts() {
 			if err != nil {
 				panic(err.Error())
 			} else {
-				msg := fmt.Sprintf("Wall post https://vk.com/wall%d_%d has been successfully deleted.",
+				msg := fmt.Sprintf("Wallpost https://vk.com/wall%d_%d"+
+					" has been successfully deleted.",
 					w.AuthorsWallPosts[i].OwnerID, w.AuthorsWallPosts[i].ID)
 				w.MsgChannel <- msg
 			}
 		}
 		w.MsgChannel <- "Done!"
 	} else {
-		w.MsgChannel <- "No wall posts from this author..."
+		w.MsgChannel <- "No wallposts from this author..."
 	}
 }
 
 func (w *WallPostsCleaner) showProgress() {
 	if len(w.WallPosts) > 0 {
 		if w.Offset == 0 {
-			w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
+			w.MsgChannel <- fmt.Sprintf("Progress: %d wallposts has been viewed...",
 				len(w.WallPosts)+w.Offset)
 		} else {
-			w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
+			w.MsgChannel <- fmt.Sprintf("Progress: %d wallposts has been viewed...",
 				len(w.WallPosts)+w.Offset-1)
 		}
 	}
