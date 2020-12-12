@@ -10,12 +10,12 @@ import (
 )
 
 func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel chan string) {
-	var wpCleaner WallPostCleaner
+	var wpCleaner WallPostsCleaner
 	wpCleaner.init(msgChannel, accessToken, ownerID, authorID)
 	for {
 		wpCleaner.requestWallPosts()
 		wpCleaner.showProgress()
-		wpCleaner.selectAuthorsPublications()
+		wpCleaner.selectAuthorsWallPosts()
 		itWasLastWallPosts := wpCleaner.checkEndOfWall()
 		if itWasLastWallPosts {
 			break
@@ -26,10 +26,10 @@ func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel 
 			wpCleaner.Offset += wpCleaner.NumberReqWallPosts
 		}
 	}
-	wpCleaner.deleteAuthorsPublications()
+	wpCleaner.deleteAuthorsWallPosts()
 }
 
-type WallPostCleaner struct {
+type WallPostsCleaner struct {
 	AccessToken        string
 	OwnerID            int
 	AuthorID           int
@@ -40,7 +40,7 @@ type WallPostCleaner struct {
 	MsgChannel         chan string
 }
 
-func (w *WallPostCleaner) init(msgChannel chan string, accessToken string, ownerID, authorID int) {
+func (w *WallPostsCleaner) init(msgChannel chan string, accessToken string, ownerID, authorID int) {
 	w.MsgChannel = msgChannel
 	w.AccessToken = accessToken
 	w.OwnerID = ownerID
@@ -49,7 +49,7 @@ func (w *WallPostCleaner) init(msgChannel chan string, accessToken string, owner
 	w.Offset = 0
 }
 
-func (w *WallPostCleaner) requestWallPosts() {
+func (w *WallPostsCleaner) requestWallPosts() {
 	paramsMap := map[string]string{
 		"owner_id": strconv.Itoa(w.OwnerID),
 		"filter":   "all",
@@ -65,7 +65,7 @@ func (w *WallPostCleaner) requestWallPosts() {
 	w.parseResponse(response)
 }
 
-func (w *WallPostCleaner) parseResponse(response []byte) {
+func (w *WallPostsCleaner) parseResponse(response []byte) {
 	var wallPosts []WallPost
 
 	var f interface{}
@@ -94,14 +94,14 @@ func (w *WallPostCleaner) parseResponse(response []byte) {
 	w.WallPosts = wallPosts
 }
 
-func (w *WallPostCleaner) checkEndOfWall() bool {
+func (w *WallPostsCleaner) checkEndOfWall() bool {
 	if len(w.WallPosts) >= w.NumberReqWallPosts {
 		return false
 	}
 	return true
 }
 
-func (w *WallPostCleaner) selectAuthorsPublications() {
+func (w *WallPostsCleaner) selectAuthorsWallPosts() {
 	var authorsWallPosts []WallPost
 	for i := 0; i < len(w.WallPosts); i++ {
 		if w.AuthorID == w.WallPosts[i].FromID {
@@ -111,7 +111,7 @@ func (w *WallPostCleaner) selectAuthorsPublications() {
 	w.AuthorsWallPosts = append(w.AuthorsWallPosts, authorsWallPosts...)
 }
 
-func (w *WallPostCleaner) deleteAuthorsPublications() {
+func (w *WallPostsCleaner) deleteAuthorsWallPosts() {
 	if len(w.AuthorsWallPosts) > 0 {
 		for i := 0; i < len(w.AuthorsWallPosts); i++ {
 			paramsMap := map[string]string{
@@ -135,7 +135,7 @@ func (w *WallPostCleaner) deleteAuthorsPublications() {
 	}
 }
 
-func (w *WallPostCleaner) showProgress() {
+func (w *WallPostsCleaner) showProgress() {
 	if w.Offset == 0 {
 		w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
 			len(w.WallPosts)+w.Offset)
