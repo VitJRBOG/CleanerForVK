@@ -161,9 +161,6 @@ func (w *WallPostCommentsCleaner) parseWallPostCommentsResponse(response []byte,
 	}
 	itWasLastWallPostComment := w.checkEndOfPostComments(wallPostComments)
 	if !(itWasLastWallPostComment) {
-		// if w.WallPostCommentsOffset == 0 {
-		// 	w.WallPostCommentsOffset++
-		// }
 		w.WallPostCommentsOffset += w.NumberReqWallPostComments
 	}
 
