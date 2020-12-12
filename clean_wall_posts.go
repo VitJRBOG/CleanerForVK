@@ -136,12 +136,14 @@ func (w *WallPostsCleaner) deleteAuthorsWallPosts() {
 }
 
 func (w *WallPostsCleaner) showProgress() {
-	if w.Offset == 0 {
-		w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
-			len(w.WallPosts)+w.Offset)
-	} else {
-		w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
-			len(w.WallPosts)+w.Offset-1)
+	if len(w.WallPosts) > 0 {
+		if w.Offset == 0 {
+			w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
+				len(w.WallPosts)+w.Offset)
+		} else {
+			w.MsgChannel <- fmt.Sprintf("Progress: %d wall posts has been viewed...",
+				len(w.WallPosts)+w.Offset-1)
+		}
 	}
 }
 
