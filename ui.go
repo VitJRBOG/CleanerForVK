@@ -199,6 +199,7 @@ func showCleanWallPostsCommentsUI() {
 	cwpcUI.setAccessToken()
 	cwpcUI.setOwnerID()
 	cwpcUI.setAuthorID()
-	go RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID, cwpcUI.msgChannel)
+	go RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID,
+		cwpcUI.msgChannel)
 	cwpcUI.outputtingMessages()
 }

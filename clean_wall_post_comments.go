@@ -9,7 +9,8 @@ import (
 	govkapi "github.com/VitJRBOG/GoVkApi"
 )
 
-func RunWallPostCommentsCleaning(accessToken string, ownerID, authorID int, msgChannel chan string) {
+func RunWallPostCommentsCleaning(accessToken string, ownerID, authorID int,
+	msgChannel chan string) {
 	var wpcCleaner WallPostCommentsCleaner
 	wpcCleaner.init(msgChannel, accessToken, ownerID, authorID)
 	for {
@@ -44,7 +45,8 @@ type WallPostCommentsCleaner struct {
 	MsgChannel                chan string
 }
 
-func (w *WallPostCommentsCleaner) init(msgChannel chan string, accessToken string, ownerID, authorID int) {
+func (w *WallPostCommentsCleaner) init(msgChannel chan string, accessToken string, ownerID,
+	authorID int) {
 	w.MsgChannel = msgChannel
 	w.AccessToken = accessToken
 	w.OwnerID = ownerID
@@ -132,7 +134,8 @@ func (w *WallPostCommentsCleaner) requestWallPostComments() {
 	}
 }
 
-func (w *WallPostCommentsCleaner) parseWallPostCommentsResponse(response []byte, wallPost WallPost) bool {
+func (w *WallPostCommentsCleaner) parseWallPostCommentsResponse(response []byte,
+	wallPost WallPost) bool {
 	var wallPostComments []WallPostComment
 
 	var f interface{}
