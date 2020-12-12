@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func MakeUI() {
+func ShowUI() {
 	var ui UI
 	ui.showMainMenu()
 	for {
@@ -42,10 +42,10 @@ func (ui *UI) setUserSelection() {
 func (ui *UI) showSelected() bool {
 	switch ui.UserSelection {
 	case "1":
-		showCleanWallPostsUI()
+		showDeletingWallPostsUI()
 		return true
 	case "2":
-		showCleanWallPostsCommentsUI()
+		showDeletingWallPostsCommentsUI()
 		return true
 	default:
 		return false
@@ -59,6 +59,17 @@ func (ui *UI) showMessageOfWrongInput() {
 
 func (ui *UI) showMessageOfExit() {
 	fmt.Print("Exit...\n")
+}
+
+func showDeletingWallPostsUI() {
+	var cwpUI CleanWallPostsUI
+	cwpUI.init()
+	fmt.Print("[Deleting wallposts]\n")
+	cwpUI.setAccessToken()
+	cwpUI.setOwnerID()
+	cwpUI.setAuthorID()
+	go RunWallPostsCleaning(cwpUI.AccessToken, cwpUI.OwnerID, cwpUI.AuthorID, cwpUI.msgChannel)
+	cwpUI.outputtingMessages()
 }
 
 type CleanWallPostsUI struct {
@@ -121,15 +132,16 @@ func (c *CleanWallPostsUI) outputtingMessages() {
 	}
 }
 
-func showCleanWallPostsUI() {
-	var cwpUI CleanWallPostsUI
-	cwpUI.init()
-	fmt.Print("[Deleting wallposts]\n")
-	cwpUI.setAccessToken()
-	cwpUI.setOwnerID()
-	cwpUI.setAuthorID()
-	go RunWallPostsCleaning(cwpUI.AccessToken, cwpUI.OwnerID, cwpUI.AuthorID, cwpUI.msgChannel)
-	cwpUI.outputtingMessages()
+func showDeletingWallPostsCommentsUI() {
+	var cwpcUI CleanWallPostCommentsUI
+	cwpcUI.init()
+	fmt.Print("[Deleting comments of wallposts]\n")
+	cwpcUI.setAccessToken()
+	cwpcUI.setOwnerID()
+	cwpcUI.setAuthorID()
+	go RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID,
+		cwpcUI.msgChannel)
+	cwpcUI.outputtingMessages()
 }
 
 type CleanWallPostCommentsUI struct {
@@ -190,16 +202,4 @@ func (c *CleanWallPostCommentsUI) outputtingMessages() {
 			break
 		}
 	}
-}
-
-func showCleanWallPostsCommentsUI() {
-	var cwpcUI CleanWallPostCommentsUI
-	cwpcUI.init()
-	fmt.Print("[Deleting comments of wallposts]\n")
-	cwpcUI.setAccessToken()
-	cwpcUI.setOwnerID()
-	cwpcUI.setAuthorID()
-	go RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID,
-		cwpcUI.msgChannel)
-	cwpcUI.outputtingMessages()
 }
