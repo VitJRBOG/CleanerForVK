@@ -197,7 +197,7 @@ func (w *WallPostCommentsCleaner) deleteAuthorsWallPostComments() {
 			if err != nil {
 				panic(err.Error())
 			} else {
-				msg := fmt.Sprintf("Wall post https://vk.com/wall%d_%d?reply=%d has been successfully deleted.",
+				msg := fmt.Sprintf("Comment https://vk.com/wall%d_%d?reply=%d has been successfully deleted.",
 					w.AuthorsWallPostComments[i].OwnerID, w.AuthorsWallPostComments[i].WallPostID, w.AuthorsWallPostComments[i].ID)
 				w.MsgChannel <- msg
 			}
