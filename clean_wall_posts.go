@@ -9,6 +9,7 @@ import (
 	govkapi "github.com/VitJRBOG/GoVkApi"
 )
 
+// RunWallPostsCleaning запускает алгоритм удаления постов со стены
 func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel chan string) {
 	var wpCleaner WallPostsCleaner
 	wpCleaner.init(msgChannel, accessToken, ownerID, authorID)
@@ -29,6 +30,7 @@ func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel 
 	wpCleaner.deleteAuthorsWallPosts()
 }
 
+// WallPostsCleaner хранит информацию для алгоритмов удаления постов со стены
 type WallPostsCleaner struct {
 	AccessToken        string
 	OwnerID            int
@@ -148,6 +150,7 @@ func (w *WallPostsCleaner) showProgress() {
 	}
 }
 
+// WallPost хранит информацию о посте со стены
 type WallPost struct {
 	ID      int
 	OwnerID int

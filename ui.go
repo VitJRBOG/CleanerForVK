@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// ShowUI отображает консольный пользовательский интерфейс (КПИ)
 func ShowUI() {
 	var ui UI
 	ui.showMainMenu()
@@ -20,6 +21,7 @@ func ShowUI() {
 	ui.showMessageOfExit()
 }
 
+// UI хранит информацию о выборе пользователя и служит для вызова методов отображения разделов КПИ
 type UI struct {
 	UserSelection string
 }
@@ -72,6 +74,7 @@ func showDeletingWallPostsUI() {
 	cwpUI.outputtingMessages()
 }
 
+// CleanWallPostsUI хранит информацию для модуля удаления постов со стены
 type CleanWallPostsUI struct {
 	AccessToken string
 	OwnerID     int
@@ -144,6 +147,7 @@ func showDeletingWallPostsCommentsUI() {
 	cwpcUI.outputtingMessages()
 }
 
+// CleanWallPostCommentsUI хранит информацию для модуля удаления комментариев из-под постов на стене
 type CleanWallPostCommentsUI struct {
 	AccessToken string
 	OwnerID     int

@@ -9,6 +9,7 @@ import (
 	govkapi "github.com/VitJRBOG/GoVkApi"
 )
 
+// RunWallPostCommentsCleaning запускает алгоритмы для удаления комментариев из-под постов со стены
 func RunWallPostCommentsCleaning(accessToken string, ownerID, authorID int,
 	msgChannel chan string) {
 	var wpcCleaner WallPostCommentsCleaner
@@ -31,6 +32,7 @@ func RunWallPostCommentsCleaning(accessToken string, ownerID, authorID int,
 	wpcCleaner.deleteAuthorsWallPostComments()
 }
 
+// WallPostCommentsCleaner хранит информацию для алгоритмов удаления комментариев из-под постов со стены
 type WallPostCommentsCleaner struct {
 	AccessToken               string
 	OwnerID                   int
@@ -225,6 +227,7 @@ func (w *WallPostCommentsCleaner) showProgress() {
 	}
 }
 
+// WallPostComment хранит информацию о комментарии из-под поста со стены
 type WallPostComment struct {
 	ID         int
 	OwnerID    int
