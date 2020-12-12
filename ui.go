@@ -132,7 +132,73 @@ func showCleanWallPostsUI() {
 	cwpUI.outputtingMessages()
 }
 
+type CleanWallPostCommentsUI struct {
+	AccessToken string
+	OwnerID     int
+	AuthorID    int
+	msgChannel  chan string
+}
+
+func (c *CleanWallPostCommentsUI) init() {
+	c.msgChannel = make(chan string)
+}
+
+func (c *CleanWallPostCommentsUI) setAccessToken() {
+	fmt.Print("--- Enter your access token and press «Enter» ---\n" +
+		"> ")
+	var accessToken string
+	_, err := fmt.Scan(&accessToken)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.AccessToken = accessToken
+}
+
+func (c *CleanWallPostCommentsUI) setOwnerID() {
+	fmt.Print("--- Now enter ID of owner of wall post comments and press «Enter» ---\n" +
+		"> ")
+	var ownerID string
+	_, err := fmt.Scan(&ownerID)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.OwnerID, err = strconv.Atoi(ownerID)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func (c *CleanWallPostCommentsUI) setAuthorID() {
+	fmt.Print("--- And enter ID of author of wall post comments and press «Enter» ---\n" +
+		"> ")
+	var authorID string
+	_, err := fmt.Scan(&authorID)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.AuthorID, err = strconv.Atoi(authorID)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func (c *CleanWallPostCommentsUI) outputtingMessages() {
+	for {
+		msg := <-c.msgChannel
+		fmt.Printf("%v\n", msg)
+		if msg == "Done!" || msg == "No wall post comments from this author..." {
+			break
+		}
+	}
+}
+
 func showCleanWallPostsCommentsUI() {
-	fmt.Println("[Cleaning of comments under wallposts]\n" +
-		"Here is empty yet....")
+	var cwpcUI CleanWallPostCommentsUI
+	cwpcUI.init()
+	fmt.Print("[Cleaning of comments under wallposts]\n")
+	cwpcUI.setAccessToken()
+	cwpcUI.setOwnerID()
+	cwpcUI.setAuthorID()
+	go RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID, cwpcUI.msgChannel)
+	cwpcUI.outputtingMessages()
 }
