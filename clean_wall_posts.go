@@ -21,10 +21,7 @@ func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel 
 		if itWasLastWallPosts {
 			break
 		} else {
-			if wpCleaner.Offset == 0 {
-				wpCleaner.Offset++
-			}
-			wpCleaner.Offset += wpCleaner.NumberReqWallPosts
+			wpCleaner.enlargeOffset()
 		}
 	}
 	wpCleaner.deleteAuthorsWallPosts()
@@ -101,6 +98,13 @@ func (w *WallPostsCleaner) checkEndOfWall() bool {
 		return false
 	}
 	return true
+}
+
+func (w *WallPostsCleaner) enlargeOffset() {
+	if w.Offset == 0 {
+		w.Offset++
+	}
+	w.Offset += w.NumberReqWallPosts
 }
 
 func (w *WallPostsCleaner) selectAuthorsWallPosts() {
