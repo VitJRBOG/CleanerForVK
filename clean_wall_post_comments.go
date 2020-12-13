@@ -25,8 +25,12 @@ func RunWallPostCommentsCleaning(accessToken string, ownerID, authorID int,
 			wpcCleaner.enlargeWallPostsOffset()
 		}
 	}
-	wpcCleaner.selectAuthorsWallPostComments()
-	wpcCleaner.deleteAuthorsWallPostComments()
+	if wpcCleaner.AuthorID == 0 {
+		wpcCleaner.deleteWallPostComments(wpcCleaner.WallPostComments)
+	} else {
+		wpcCleaner.selectAuthorsWallPostComments()
+		wpcCleaner.deleteWallPostComments(wpcCleaner.AuthorsWallPostComments)
+	}
 }
 
 // WallPostCommentsCleaner хранит информацию для алгоритмов удаления комментариев из-под постов со стены
@@ -191,15 +195,19 @@ func (w *WallPostCommentsCleaner) selectAuthorsWallPostComments() {
 			authorsWallPostComments = append(authorsWallPostComments, w.WallPostComments[i])
 		}
 	}
-	w.AuthorsWallPostComments = append(w.AuthorsWallPostComments, authorsWallPostComments...)
+	if len(authorsWallPostComments) > 0 {
+		w.AuthorsWallPostComments = append(w.AuthorsWallPostComments, authorsWallPostComments...)
+	} else {
+		w.MsgChannel <- "No comments of wallpost from this author..."
+	}
 }
 
-func (w *WallPostCommentsCleaner) deleteAuthorsWallPostComments() {
-	if len(w.AuthorsWallPostComments) > 0 {
-		for i := 0; i < len(w.AuthorsWallPostComments); i++ {
+func (w *WallPostCommentsCleaner) deleteWallPostComments(wallPostComments []WallPostComment) {
+	if len(wallPostComments) > 0 {
+		for i := 0; i < len(wallPostComments); i++ {
 			paramsMap := map[string]string{
-				"owner_id":   strconv.Itoa(w.AuthorsWallPostComments[i].OwnerID),
-				"comment_id": strconv.Itoa(w.AuthorsWallPostComments[i].ID),
+				"owner_id":   strconv.Itoa(wallPostComments[i].OwnerID),
+				"comment_id": strconv.Itoa(wallPostComments[i].ID),
 				"v":          "5.126",
 			}
 			time.Sleep(335 * time.Millisecond)
@@ -209,14 +217,12 @@ func (w *WallPostCommentsCleaner) deleteAuthorsWallPostComments() {
 			} else {
 				msg := fmt.Sprintf("Comment https://vk.com/wall%d_%d?reply=%d"+
 					" has been successfully deleted.",
-					w.AuthorsWallPostComments[i].OwnerID, w.AuthorsWallPostComments[i].WallPostID,
-					w.AuthorsWallPostComments[i].ID)
+					wallPostComments[i].OwnerID, wallPostComments[i].WallPostID,
+					wallPostComments[i].ID)
 				w.MsgChannel <- msg
 			}
 		}
 		w.MsgChannel <- "Done!"
-	} else {
-		w.MsgChannel <- "No comments of wallpost from this author..."
 	}
 }
 
