@@ -22,10 +22,7 @@ func RunWallPostCommentsCleaning(accessToken string, ownerID, authorID int,
 		if itWasLastWallPosts {
 			break
 		} else {
-			if wpcCleaner.WallPostsOffset == 0 {
-				wpcCleaner.WallPostsOffset++
-			}
-			wpcCleaner.WallPostsOffset += wpcCleaner.NumberReqWallPosts
+			wpcCleaner.enlargeWallPostsOffset()
 		}
 	}
 	wpcCleaner.selectAuthorsWallPostComments()
@@ -111,6 +108,13 @@ func (w *WallPostCommentsCleaner) checkEndOfWall() bool {
 	return true
 }
 
+func (w *WallPostCommentsCleaner) enlargeWallPostsOffset() {
+	if w.WallPostsOffset == 0 {
+		w.WallPostsOffset++
+	}
+	w.WallPostsOffset += w.NumberReqWallPosts
+}
+
 func (w *WallPostCommentsCleaner) requestWallPostComments() {
 	for i := 0; i < len(w.WallPosts); i++ {
 		for {
@@ -161,7 +165,7 @@ func (w *WallPostCommentsCleaner) parseWallPostCommentsResponse(response []byte,
 	}
 	itWasLastWallPostComment := w.checkEndOfPostComments(wallPostComments)
 	if !(itWasLastWallPostComment) {
-		w.WallPostCommentsOffset += w.NumberReqWallPostComments
+		w.enlargeWallPostCommentsOffset()
 	}
 
 	w.WallPostComments = append(w.WallPostComments, wallPostComments...)
@@ -174,6 +178,10 @@ func (w *WallPostCommentsCleaner) checkEndOfPostComments(wallPostComments []Wall
 		return false
 	}
 	return true
+}
+
+func (w *WallPostCommentsCleaner) enlargeWallPostCommentsOffset() {
+	w.WallPostCommentsOffset += w.NumberReqWallPostComments
 }
 
 func (w *WallPostCommentsCleaner) selectAuthorsWallPostComments() {
