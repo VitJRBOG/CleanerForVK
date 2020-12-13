@@ -16,7 +16,6 @@ func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel 
 	for {
 		wpCleaner.requestWallPosts()
 		wpCleaner.showProgress()
-		wpCleaner.selectAuthorsWallPosts()
 		itWasLastWallPosts := wpCleaner.checkEndOfWall()
 		if itWasLastWallPosts {
 			break
@@ -24,7 +23,12 @@ func RunWallPostsCleaning(accessToken string, ownerID, authorID int, msgChannel 
 			wpCleaner.enlargeOffset()
 		}
 	}
-	wpCleaner.deleteAuthorsWallPosts()
+	if wpCleaner.AuthorID == 0 {
+		wpCleaner.deleteWallPosts(wpCleaner.WallPosts)
+	} else {
+		wpCleaner.selectAuthorsWallPosts()
+		wpCleaner.deleteWallPosts(wpCleaner.AuthorsWallPosts)
+	}
 }
 
 // WallPostsCleaner хранит информацию для алгоритмов удаления постов со стены
@@ -90,7 +94,7 @@ func (w *WallPostsCleaner) parseResponse(response []byte) {
 		wallPosts = append(wallPosts, wallPost)
 	}
 
-	w.WallPosts = wallPosts
+	w.WallPosts = append(w.WallPosts, wallPosts...)
 }
 
 func (w *WallPostsCleaner) checkEndOfWall() bool {
@@ -114,15 +118,19 @@ func (w *WallPostsCleaner) selectAuthorsWallPosts() {
 			authorsWallPosts = append(authorsWallPosts, w.WallPosts[i])
 		}
 	}
-	w.AuthorsWallPosts = append(w.AuthorsWallPosts, authorsWallPosts...)
+	if len(authorsWallPosts) > 0 {
+		w.AuthorsWallPosts = append(w.AuthorsWallPosts, authorsWallPosts...)
+	} else {
+		w.MsgChannel <- "No wallposts from this author..."
+	}
 }
 
-func (w *WallPostsCleaner) deleteAuthorsWallPosts() {
-	if len(w.AuthorsWallPosts) > 0 {
-		for i := 0; i < len(w.AuthorsWallPosts); i++ {
+func (w *WallPostsCleaner) deleteWallPosts(wallPosts []WallPost) {
+	if len(wallPosts) > 0 {
+		for i := 0; i < len(wallPosts); i++ {
 			paramsMap := map[string]string{
-				"owner_id": strconv.Itoa(w.AuthorsWallPosts[i].OwnerID),
-				"post_id":  strconv.Itoa(w.AuthorsWallPosts[i].ID),
+				"owner_id": strconv.Itoa(wallPosts[i].OwnerID),
+				"post_id":  strconv.Itoa(wallPosts[i].ID),
 				"v":        "5.126",
 			}
 			time.Sleep(335 * time.Millisecond)
@@ -132,13 +140,11 @@ func (w *WallPostsCleaner) deleteAuthorsWallPosts() {
 			} else {
 				msg := fmt.Sprintf("Wallpost https://vk.com/wall%d_%d"+
 					" has been successfully deleted.",
-					w.AuthorsWallPosts[i].OwnerID, w.AuthorsWallPosts[i].ID)
+					wallPosts[i].OwnerID, wallPosts[i].ID)
 				w.MsgChannel <- msg
 			}
 		}
 		w.MsgChannel <- "Done!"
-	} else {
-		w.MsgChannel <- "No wallposts from this author..."
 	}
 }
 

@@ -112,7 +112,8 @@ func (c *CleanWallPostsUI) setOwnerID() {
 }
 
 func (c *CleanWallPostsUI) setAuthorID() {
-	fmt.Print("--- And enter ID of author of wallposts comments and press «Enter» ---\n" +
+	fmt.Print("--- And enter ID of author of wallposts (or enter 0" +
+		" if you need deleting all wallposts) and press «Enter» ---\n" +
 		"> ")
 	var authorID string
 	_, err := fmt.Scan(&authorID)
