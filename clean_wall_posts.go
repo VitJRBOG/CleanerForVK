@@ -94,7 +94,11 @@ func (w *WallPostsCleaner) parseResponse(response []byte) {
 		wallPosts = append(wallPosts, wallPost)
 	}
 
-	w.WallPosts = append(w.WallPosts, wallPosts...)
+	if len(wallPosts) > 0 {
+		w.WallPosts = append(w.WallPosts, wallPosts...)
+	} else {
+		w.MsgChannel <- "No posts on the wall..."
+	}
 }
 
 func (w *WallPostsCleaner) checkEndOfWall() bool {
@@ -113,15 +117,17 @@ func (w *WallPostsCleaner) enlargeOffset() {
 
 func (w *WallPostsCleaner) selectAuthorsWallPosts() {
 	var authorsWallPosts []WallPost
-	for i := 0; i < len(w.WallPosts); i++ {
-		if w.AuthorID == w.WallPosts[i].FromID {
-			authorsWallPosts = append(authorsWallPosts, w.WallPosts[i])
+	if len(w.WallPosts) > 0 {
+		for i := 0; i < len(w.WallPosts); i++ {
+			if w.AuthorID == w.WallPosts[i].FromID {
+				authorsWallPosts = append(authorsWallPosts, w.WallPosts[i])
+			}
 		}
-	}
-	if len(authorsWallPosts) > 0 {
-		w.AuthorsWallPosts = append(w.AuthorsWallPosts, authorsWallPosts...)
-	} else {
-		w.MsgChannel <- "No wallposts from this author..."
+		if len(authorsWallPosts) > 0 {
+			w.AuthorsWallPosts = append(w.AuthorsWallPosts, authorsWallPosts...)
+		} else {
+			w.MsgChannel <- "No wallposts from this author..."
+		}
 	}
 }
 

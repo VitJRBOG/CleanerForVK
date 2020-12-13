@@ -130,7 +130,9 @@ func (c *CleanWallPostsUI) outputtingMessages() {
 	for {
 		msg := <-c.msgChannel
 		fmt.Printf("%v\n", msg)
-		if msg == "Done!" || msg == "No wallposts from this author..." {
+		if msg == "Done!" ||
+			msg == "No wallposts from this author..." ||
+			msg == "No posts on the wall..." {
 			break
 		}
 	}
