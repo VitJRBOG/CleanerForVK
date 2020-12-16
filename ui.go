@@ -29,7 +29,8 @@ type UI struct {
 func (ui *UI) showMainMenu() {
 	fmt.Print("\n[Main menu]\n" +
 		"1. Deleting wallposts;\n" +
-		"2. Deleting comments of wallposts.\n" +
+		"2. Deleting comments of wallposts;\n" +
+		"3. Unbanning subjects of community's blacklist.\n" +
 		"--- Enter number of menu item and press «Enter» ---\n" +
 		"> ")
 }
@@ -48,6 +49,9 @@ func (ui *UI) showSelected() bool {
 		return true
 	case "2":
 		showDeletingWallPostsCommentsUI()
+		return true
+	case "3":
+		showUnbanningCommunityBlacklistSubjectsUI()
 		return true
 	default:
 		return false
@@ -207,6 +211,62 @@ func (c *CleanWallPostCommentsUI) outputtingMessages() {
 		msg := <-c.msgChannel
 		fmt.Printf("%v\n", msg)
 		if msg == "Done!" || msg == "No comments of wallpost from this author..." {
+			break
+		}
+	}
+}
+
+func showUnbanningCommunityBlacklistSubjectsUI() {
+	var cbUI CleanBlacklistUI
+	cbUI.init()
+	fmt.Print("[Unbanning subjects of community's blacklist]\n")
+	cbUI.setAccessToken()
+	cbUI.setOwnerID()
+	go RunCommunityBlacklistCleaning(cbUI.AccessToken, cbUI.OwnerID, cbUI.msgChannel)
+	cbUI.outputtingMessages()
+}
+
+// CleanBlacklistUI хранит информацию для модуля удаления субъектов из черного списка сообщества
+type CleanBlacklistUI struct {
+	AccessToken string
+	OwnerID     int
+	msgChannel  chan string
+}
+
+func (c *CleanBlacklistUI) init() {
+	c.msgChannel = make(chan string)
+}
+
+func (c *CleanBlacklistUI) setAccessToken() {
+	fmt.Print("--- Enter your access token and press «Enter» ---\n" +
+		"> ")
+	var accessToken string
+	_, err := fmt.Scan(&accessToken)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.AccessToken = accessToken
+}
+
+func (c *CleanBlacklistUI) setOwnerID() {
+	fmt.Print("--- Now enter ID of owner of blacklist and press «Enter» ---\n" +
+		"> ")
+	var ownerID string
+	_, err := fmt.Scan(&ownerID)
+	if err != nil {
+		panic(err.Error())
+	}
+	c.OwnerID, err = strconv.Atoi(ownerID)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func (c *CleanBlacklistUI) outputtingMessages() {
+	for {
+		msg := <-c.msgChannel
+		fmt.Printf("%v\n", msg)
+		if msg == "Done!" || msg == "No banned subjects in the blacklist..." {
 			break
 		}
 	}
