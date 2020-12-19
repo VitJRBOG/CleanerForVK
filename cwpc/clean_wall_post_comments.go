@@ -1,4 +1,4 @@
-package main
+package cwpc
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/VitJRBOG/CleaningVk/cwp"
 	govkapi "github.com/VitJRBOG/GoVkApi"
 )
 
@@ -42,7 +43,7 @@ type WallPostCommentsCleaner struct {
 	NumberReqWallPostComments int
 	WallPostsOffset           int
 	WallPostCommentsOffset    int
-	WallPosts                 []WallPost
+	WallPosts                 []cwp.WallPost
 	WallPostComments          []WallPostComment
 	AuthorsWallPostComments   []WallPostComment
 	MsgChannel                chan string
@@ -77,7 +78,7 @@ func (w *WallPostCommentsCleaner) requestWallPosts() {
 }
 
 func (w *WallPostCommentsCleaner) parseWallPostsResponse(response []byte) {
-	var wallPosts []WallPost
+	var wallPosts []cwp.WallPost
 
 	var f interface{}
 	err := json.Unmarshal(response, &f)
@@ -87,7 +88,7 @@ func (w *WallPostCommentsCleaner) parseWallPostsResponse(response []byte) {
 	valuesMap := f.(map[string]interface{})
 
 	for _, itemMap := range valuesMap["items"].([]interface{}) {
-		var wallPost WallPost
+		var wallPost cwp.WallPost
 
 		item := itemMap.(map[string]interface{})
 
@@ -145,7 +146,7 @@ func (w *WallPostCommentsCleaner) requestWallPostComments() {
 }
 
 func (w *WallPostCommentsCleaner) parseWallPostCommentsResponse(response []byte,
-	wallPost WallPost) bool {
+	wallPost cwp.WallPost) bool {
 	var wallPostComments []WallPostComment
 
 	var f interface{}

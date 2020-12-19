@@ -1,4 +1,4 @@
-package main
+package cwp
 
 import (
 	"encoding/json"

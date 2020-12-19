@@ -1,8 +1,12 @@
-package main
+package cli
 
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/VitJRBOG/CleaningVk/ccb"
+	"github.com/VitJRBOG/CleaningVk/cwp"
+	"github.com/VitJRBOG/CleaningVk/cwpc"
 )
 
 // ShowUI отображает консольный пользовательский интерфейс (КПИ)
@@ -74,7 +78,7 @@ func showDeletingWallPostsUI() {
 	cwpUI.setAccessToken()
 	cwpUI.setOwnerID()
 	cwpUI.setAuthorID()
-	go RunWallPostsCleaning(cwpUI.AccessToken, cwpUI.OwnerID, cwpUI.AuthorID, cwpUI.msgChannel)
+	go cwp.RunWallPostsCleaning(cwpUI.AccessToken, cwpUI.OwnerID, cwpUI.AuthorID, cwpUI.msgChannel)
 	cwpUI.outputtingMessages()
 }
 
@@ -149,7 +153,7 @@ func showDeletingWallPostsCommentsUI() {
 	cwpcUI.setAccessToken()
 	cwpcUI.setOwnerID()
 	cwpcUI.setAuthorID()
-	go RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID,
+	go cwpc.RunWallPostCommentsCleaning(cwpcUI.AccessToken, cwpcUI.OwnerID, cwpcUI.AuthorID,
 		cwpcUI.msgChannel)
 	cwpcUI.outputtingMessages()
 }
@@ -222,7 +226,7 @@ func showUnbanningCommunityBlacklistSubjectsUI() {
 	fmt.Print("[Unbanning subjects of community's blacklist]\n")
 	cbUI.setAccessToken()
 	cbUI.setOwnerID()
-	go RunCommunityBlacklistCleaning(cbUI.AccessToken, cbUI.OwnerID, cbUI.msgChannel)
+	go ccb.RunCommunityBlacklistCleaning(cbUI.AccessToken, cbUI.OwnerID, cbUI.msgChannel)
 	cbUI.outputtingMessages()
 }
 

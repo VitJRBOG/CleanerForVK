@@ -1,4 +1,4 @@
-package main
+package ccb
 
 import (
 	"encoding/json"
