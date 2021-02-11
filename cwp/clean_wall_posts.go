@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	govkapi "github.com/VitJRBOG/GoVkApi"
+	govkapi "github.com/VitJRBOG/GoVkApi/v2"
 )
 
 // RunWallPostsCleaning запускает алгоритм удаления постов со стены
@@ -61,7 +61,7 @@ func (w *WallPostsCleaner) requestWallPosts() {
 		"v":        "5.126",
 	}
 	time.Sleep(335 * time.Millisecond)
-	response, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.get", paramsMap)
+	response, err := govkapi.Method("wall.get", w.AccessToken, paramsMap)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -140,7 +140,7 @@ func (w *WallPostsCleaner) deleteWallPosts(wallPosts []WallPost) {
 				"v":        "5.126",
 			}
 			time.Sleep(335 * time.Millisecond)
-			_, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.delete", paramsMap)
+			_, err := govkapi.Method("wall.delete", w.AccessToken, paramsMap)
 			if err != nil {
 				panic(err.Error())
 			} else {

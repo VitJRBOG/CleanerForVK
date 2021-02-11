@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	govkapi "github.com/VitJRBOG/GoVkApi"
+	govkapi "github.com/VitJRBOG/GoVkApi/v2"
 )
 
 // RunCommunityBlacklistCleaning запускает алгоритмы удаления субъектов из черного списка сообщества
@@ -58,7 +58,7 @@ func (c *CommunityBlacklistCleaner) requestBanned() bool {
 		"v":        "5.126",
 	}
 	time.Sleep(335 * time.Millisecond)
-	response, err := govkapi.SendRequestVkApi(c.AccessToken, "groups.getBanned", paramsMap)
+	response, err := govkapi.Method("groups.getBanned", c.AccessToken, paramsMap)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -117,7 +117,7 @@ func (c *CommunityBlacklistCleaner) unbanBanned() {
 				"v":        "5.126",
 			}
 			time.Sleep(335 * time.Millisecond)
-			_, err := govkapi.SendRequestVkApi(c.AccessToken, "groups.unban", paramsMap)
+			_, err := govkapi.Method("groups.unban", c.AccessToken, paramsMap)
 			if err != nil {
 				panic(err.Error())
 			} else {

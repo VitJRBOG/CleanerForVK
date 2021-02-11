@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/VitJRBOG/CleaningVk/cwp"
-	govkapi "github.com/VitJRBOG/GoVkApi"
+	govkapi "github.com/VitJRBOG/GoVkApi/v2"
 )
 
 // RunWallPostCommentsCleaning запускает алгоритмы для удаления комментариев из-под постов со стены
@@ -70,7 +70,7 @@ func (w *WallPostCommentsCleaner) requestWallPosts() {
 		"v":        "5.126",
 	}
 	time.Sleep(335 * time.Millisecond)
-	response, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.get", paramsMap)
+	response, err := govkapi.Method("wall.get", w.AccessToken, paramsMap)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -132,7 +132,7 @@ func (w *WallPostCommentsCleaner) requestWallPostComments() {
 				"v":        "5.68",
 			}
 			time.Sleep(335 * time.Millisecond)
-			response, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.getComments", paramsMap)
+			response, err := govkapi.Method("wall.getComments", w.AccessToken, paramsMap)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -212,7 +212,7 @@ func (w *WallPostCommentsCleaner) deleteWallPostComments(wallPostComments []Wall
 				"v":          "5.126",
 			}
 			time.Sleep(335 * time.Millisecond)
-			_, err := govkapi.SendRequestVkApi(w.AccessToken, "wall.deleteComment", paramsMap)
+			_, err := govkapi.Method("wall.deleteComment", w.AccessToken, paramsMap)
 			if err != nil {
 				panic(err.Error())
 			} else {
